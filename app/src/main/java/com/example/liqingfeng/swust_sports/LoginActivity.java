@@ -6,6 +6,7 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.drawable.Animatable;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -69,6 +70,21 @@ public class LoginActivity extends Activity{
 
         inputAnimator(mInputLayout, mWidth, mHeight);
 
+        //和动画线程分离
+        new Thread(){
+            public void run(){
+                try {
+                    //耗时操作
+                    sleep(2000);
+                    Intent intent=new Intent(LoginActivity.this,MaininterfaceActivity.class);
+                    onStop();
+                    startActivity(intent);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }.start();
     }
 
     //输入框的动画效果
@@ -143,6 +159,12 @@ public class LoginActivity extends Activity{
     protected void onStop() {
         super.onStop();
         videoview.stopPlayback();
+    }
+
+    public void register(View view)
+    {
+        Intent intent=new Intent(LoginActivity.this,RegisterActivity.class);
+        startActivity(intent);
     }
 
 }
