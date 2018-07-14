@@ -1,23 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="注册界面"
-        tools:layout_editor_absoluteX="142dp"
-        tools:layout_editor_absoluteY="183dp"
+        android:gravity="center_vertical"
+        android:padding="14dip">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" "
+            android:textColor="@color/black"
+            android:drawableLeft="@mipmap/ic_back_black"
+            android:textSize="22dp"
+            android:onClick="backTologin"
+            android:clickable="true"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:textSize="20sp"
+            android:text="Sign up"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="0dp"
         tools:ignore="MissingConstraints"
-        android:focusable="true"/>
-    </LinearLayout>
+        android:gravity="center_vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
+            android:paddingTop="56dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="72dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="24dp"
+                android:src="@mipmap/ic_stranger" />
+
+            <include
+                android:id="@+id/layout_register_input"
+                layout="@layout/register_layout"
+                android:layout_width="match_parent"
+                android:layout_height="380dip">
+
+            </include>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                <!-- Register Button -->
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/btn_register"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="24dp"
+                    android:layout_marginLeft="100dp"
+                    android:layout_marginTop="24dp"
+                    android:background="@drawable/shape_button"
+                    android:gravity="center_horizontal"
+                    android:padding="12dp"
+                    android:text="注册用户"
+                    android:textColor="@color/white"
+                    android:onClick="registerbutton"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/link_login"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="24dp"
+                android:gravity="center"
+                android:text="\@西科运动圈开发团队——贼会吹小团队"
+                android:textSize="16dip" />
+        </LinearLayout>
+
+    </RelativeLayout>
 </android.support.constraint.ConstraintLayout>

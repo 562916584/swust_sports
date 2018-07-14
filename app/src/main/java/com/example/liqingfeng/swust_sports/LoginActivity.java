@@ -6,16 +6,21 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Animatable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -36,6 +41,7 @@ public class LoginActivity extends Activity{
         setContentView(R.layout.activity_login);
 
         initView();
+
     }
 
     private void initView() {
@@ -57,6 +63,7 @@ public class LoginActivity extends Activity{
                 videoview.start();
             }
         });
+
 
     }
 
@@ -161,10 +168,74 @@ public class LoginActivity extends Activity{
         videoview.stopPlayback();
     }
 
+    //打开新Activity 得到返回值
     public void register(View view)
     {
-        Intent intent=new Intent(LoginActivity.this,RegisterActivity.class);
-        startActivity(intent);
+        //得到返回值
+        startActivityForResult(new Intent(LoginActivity.this,RegisterActivity.class),1);
+    }
+    @Override
+    protected void onActivityResult(int requestCode,int resultCode,Intent data)
+    {
+        String result=data.getExtras().getString("result");
+        EditText usname=findViewById(R.id.input_usname);
+        usname.setText(result);
+    }
+
+
+    //自动收起输入法
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            View v = getCurrentFocus();
+            if (isShouldHideKeyboard(v, ev)) {
+                boolean res=hideKeyboard(v.getWindowToken());
+                if(res){
+                    //隐藏了输入法，则不再分发事件
+                    return true;
+                }
+            }
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
+    /**
+     * 根据EditText所在坐标和用户点击的坐标相对比，来判断是否隐藏键盘，因为当用户点击EditText时则不能隐藏
+     *
+     * @param v
+     * @param event
+     * @return
+     */
+    private boolean isShouldHideKeyboard(View v, MotionEvent event) {
+        if (v != null && (v instanceof EditText)) {
+            int[] l = {0, 0};
+            v.getLocationInWindow(l);
+            int left = l[0],
+                    top = l[1],
+                    bottom = top + v.getHeight(),
+                    right = left + v.getWidth();
+            if (event.getX() > left && event.getX() < right
+                    && event.getY() > top && event.getY() < bottom) {
+                // 点击EditText的事件，忽略它。
+                return false;
+            } else {
+                return true;
+            }
+        }
+        // 如果焦点不是EditText则忽略，这个发生在视图刚绘制完，第一个焦点不在EditText上，和用户用轨迹球选择其他的焦点
+        return false;
+    }
+
+    /**
+     * 获取InputMethodManager，隐藏软键盘
+     * @param token
+     */
+    private boolean hideKeyboard(IBinder token) {
+        if (token != null) {
+            InputMethodManager im = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            return  im.hideSoftInputFromWindow(token, InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+        return false;
     }
 
 }

@@ -8,11 +8,6 @@
         android:layout_height="50dip"
         android:gravity="center_vertical"
         android:padding="10dip">
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/ic_back"
-            android:onClick="dropout"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -20,6 +15,6 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:textSize="20sp"
-            android:text="Sign Up"/>
+            android:text="Sign In"/>
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>

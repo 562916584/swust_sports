@@ -5,21 +5,40 @@ import android.os.Parcelable;
 
 public class Users implements Parcelable{
     private int id;
-    private String name;
-    private int price;
-    private String email;
+    private String usName;
+    private String usPassword;
+    private String usAge;
+    private String usNickname;
+    private String usSign;
+    private String usClass;
+    private String usMajor;
+    private String usInstitution;
+    private String usRoomid;
+    private String usStatus;
+    private String usRole;
+
     public Users()
     {
         super();
     }
-    public Users(int id,String naem,int price,String email )
-    {
-        super();
-        this.id=id;
-        this.name=name;
-        this.price=price;
-        this.email=email;
+
+    public Users(String usName, String usPassword, String usAge,
+                 String usNickname, String usSign, String usClass,
+                 String usMajor, String usInstitution,
+                 String usRoomid, String usStatus, String usRole) {
+        this.usName = usName;
+        this.usPassword = usPassword;
+        this.usAge = usAge;
+        this.usNickname = usNickname;
+        this.usSign = usSign;
+        this.usClass = usClass;
+        this.usMajor = usMajor;
+        this.usInstitution = usInstitution;
+        this.usRoomid = usRoomid;
+        this.usStatus = usStatus;
+        this.usRole = usRole;
     }
+
     public void setUser_ID(int ID)
     {
         this.id=ID;
@@ -28,33 +47,29 @@ public class Users implements Parcelable{
     {
         return id;
     }
-    public void setPrice(int dprice)
+    public void setUsName(String usName)
     {
-        this.price=dprice;
+        this.usName=usName;
     }
-    public int getPrice()
+    public String getUsnName()
     {
-        return price;
+        return usName;
     }
-    public void setEmail(String email)
+    public void setUsNickname(String usNickname)
     {
-        this.email=email;
+        this.usNickname=usNickname;
     }
-    public String getEmail()
+    public String getUsnNickname()
     {
-        return email;
+        return usNickname;
     }
-    public String getName()
+    public String getUsPassword()
     {
-        return name;
+        return usPassword;
     }
-    public void setName(String name)
+    public void setUsPassword(String usPassword)
     {
-        this.name=name;
-    }
-    public String toString()
-    {
-        return "Person[id="+id+",name="+name+",imagepath="+email+"]";
+        this.usPassword=usPassword;
     }
 
     //序列化实体类
@@ -63,9 +78,9 @@ public class Users implements Parcelable{
         public Users createFromParcel(Parcel parcel) {
             Users users=new Users();
             users.id=parcel.readInt();
-            users.name=parcel.readString();
-            users.price=parcel.readInt();
-            users.email=parcel.readString();
+            users.usName=parcel.readString();
+            users.usNickname=parcel.readString();
+            users.usPassword=parcel.readString();
             return users;
         }
 
@@ -82,8 +97,8 @@ public class Users implements Parcelable{
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeInt(id);
-        parcel.writeString(name);
-        parcel.writeInt(price);
-        parcel.writeString(email);
+        parcel.writeString(usName);
+        parcel.writeString(usNickname);
+        parcel.writeString(usPassword);
     }
 }
