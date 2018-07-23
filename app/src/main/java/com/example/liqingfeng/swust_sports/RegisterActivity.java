@@ -34,8 +34,6 @@ public class RegisterActivity extends Activity {
     private EditText password1;
     private EditText password2;
     public static String acccountString;
-    private Handler mhandler;
-    private Message msg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,11 +46,6 @@ public class RegisterActivity extends Activity {
 
     }
 
-    public void backTologin(View view) {
-        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-        startActivity(intent);
-
-    }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
@@ -181,11 +174,11 @@ public class RegisterActivity extends Activity {
                 RegisterActivity.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if((Integer) finalResponseModel.getData()==0)
+                        if( (Double)finalResponseModel.getData()==0.0)
                         {
                             Toast.makeText(RegisterActivity.this,"注册用户已经存在",Toast.LENGTH_SHORT).show();
                         }
-                        else if ((Integer)finalResponseModel.getData()==1)
+                        else if ((Double)finalResponseModel.getData()==1.0)
                         {
                             Toast.makeText(RegisterActivity.this,"注册成功",Toast.LENGTH_SHORT).show();
                             onBackPressed();

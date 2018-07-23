@@ -43,6 +43,7 @@ public class MaininterfaceActivity extends Activity {
 
         setContentView(R.layout.activity_maininterface);
     }
+    /*
     public void textbutton(View view){
         //验证码接口
         String url="http://wangzhengyu.cn/api/verify/getVerify.do";
@@ -85,14 +86,14 @@ public class MaininterfaceActivity extends Activity {
                         imageView.setImageBitmap(bitmap);
                     }
                 });
-                /*
+
                 //多个List《Map》解析json
                 json=response.body().string();
                 Gson gson=new Gson();
                 ResponseModel object=Json_analyze.getperson(json,ResponseModel.class);
                 List<Map<String,String>> list=(List<Map<String,String>>)object.getData();
                 System.out.println(list);
-                */
+
             }
         });
 
@@ -111,4 +112,5 @@ public class MaininterfaceActivity extends Activity {
         return bitmap;
     }
 
+*/
 }

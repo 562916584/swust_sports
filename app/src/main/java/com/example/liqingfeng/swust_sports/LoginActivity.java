@@ -31,6 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.concurrent.TimeUnit;
 
@@ -48,8 +49,9 @@ public class LoginActivity extends Activity{
     private LinearLayout mName, mpas,mver;
     private CustomVideoView videoview;
     private ImageView verify_imageview;
+    private EditText username,password,verify;
     //登陆接口
-    private String url="http://wangzhengyu.cn/api/user/login.do";
+    private String url="http://wangzhengyu.cn/api/user/login.do",url_login;
     //验证码字符串
     private String imag_String,verify_code;
 
@@ -80,6 +82,10 @@ public class LoginActivity extends Activity{
         mName = (LinearLayout) findViewById(R.id.input_layout_name);
         mpas = (LinearLayout) findViewById(R.id.input_layout_psw);
         mver=(LinearLayout)findViewById(R.id.input_ver);
+        //三个Edittext输入框 获取输入输出
+        username=findViewById(R.id.input_username);
+        password=findViewById(R.id.input_password);
+        verify=findViewById(R.id.input_verify);
 
         videoview = (CustomVideoView) findViewById(R.id.vidoview);
         videoview.setVideoURI(Uri.parse("android.resource://"+getPackageName()+"/"+R.raw.sport));
@@ -102,11 +108,19 @@ public class LoginActivity extends Activity{
         verify_imageview.setVisibility(view.VISIBLE);
 
     }
+    //登陆失败 恢复之前的样子
+    public void recover()
+    {
+        finish();
+        startActivity(getIntent());
+
+    }
 
     public void logining(View v) {
 
+        url_login=requesturl();
         //get方式发送请求数据，实现登陆操作
-        login_progress(url);
+        login_progress(url_login);
 
         // 计算出控件的高与宽
         mWidth = mBthLogin.getMeasuredWidth();
@@ -136,13 +150,25 @@ public class LoginActivity extends Activity{
         */
     }
 
+    //返回URL 登陆接口
+    private String requesturl() {
+        String usName,usPassword,verifyCode,code;
+        usName=username.getText().toString();
+        usPassword=password.getText().toString();
+        verifyCode=verify_code;
+        code=verify.getText().toString();
+        //密码加密
+        usPassword += "swust_sport";
+        usPassword = android.util.Base64.encodeToString(usPassword.getBytes(),
+                android.util.Base64.DEFAULT);
+        url=url+"?"+"usName="+usName+"&usPassword="+usPassword+"&verifyCode="+verifyCode +"&code="+code;
+        return url;
+    }
+
     //登陆请求操作
     private void login_progress(String Url)
     {
         OkHttpClient okHttpClient=new OkHttpClient.Builder()
-                .connectTimeout(10, TimeUnit.SECONDS)
-                .writeTimeout(10,TimeUnit.SECONDS)
-                .readTimeout(20, TimeUnit.SECONDS)
                 .build();
         final Request request=new Request.Builder()
                 .url(url)
@@ -166,16 +192,34 @@ public class LoginActivity extends Activity{
                 LoginActivity.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if((Integer) finalResponseModel.getData()==0)
+                        Map<String,Object> map=(Map<String,Object>)finalResponseModel.getData();
+
+                        if((Double)map.get("status")==2.0)
                         {
-                            Toast.makeText(LoginActivity.this,"登陆失败",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this,"用户不存在",Toast.LENGTH_SHORT).show();
+                            recover();
                         }
-                        else if ((Integer)finalResponseModel.getData()==1)
+                        else if ((Double)map.get("status")==1.0)
                         {
                             Toast.makeText(LoginActivity.this,"登陆成功",Toast.LENGTH_SHORT).show();
                             Intent intent=new Intent(LoginActivity.this,MaininterfaceActivity.class);
                             onStop();
                             startActivity(intent);
+                        }
+                        else if((Double)map.get("status")==3.0)
+                        {
+                            Toast.makeText(LoginActivity.this,"密码错误",Toast.LENGTH_SHORT).show();
+                            recover();
+                        }
+                        else if((Double)map.get("status")==4.0)
+                        {
+                            Toast.makeText(LoginActivity.this,"验证码错误",Toast.LENGTH_SHORT).show();
+                            recover();
+                        }
+                        else if((Double)map.get("status")==5.0)
+                        {
+                            Toast.makeText(LoginActivity.this,"用户已被锁定",Toast.LENGTH_SHORT).show();
+                            recover();
                         }
                     }
                 });
@@ -240,7 +284,6 @@ public class LoginActivity extends Activity{
         animator3.setDuration(1000);
         animator3.setInterpolator(new JellyInterpolator());
         animator3.start();
-
     }
 
     //返回重启加载
