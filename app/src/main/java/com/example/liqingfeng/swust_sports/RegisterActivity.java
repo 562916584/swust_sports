@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -33,6 +34,8 @@ public class RegisterActivity extends Activity {
     private EditText password1;
     private EditText password2;
     public static String acccountString;
+    private Handler mhandler;
+    private Message msg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +113,7 @@ public class RegisterActivity extends Activity {
         String usernameString;
         String password1String;
         String password2String;
-        String url="http://192.168.3.53/sport/user/register.do";
+        String url="http://wangzhengyu.cn/sport/user/register.do";
         username = findViewById(R.id.uname);
         account = findViewById(R.id.account);
         password1 = findViewById(R.id.password1);
@@ -169,65 +172,40 @@ public class RegisterActivity extends Activity {
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(Call call, final Response response) throws IOException {
                 //请求成功
                 //Log.e("TAG","成功"+response.body().string());
                 ResponseModel responseModel=new ResponseModel();
                 responseModel=Json_analyze.getperson(response.body().string(),ResponseModel.class);
-                /*
-                if((Integer)responseModel.getData()==0)
-                {
-                    Toast.makeText(RegisterActivity.this,"用户已存在",Toast.LENGTH_SHORT).show();
-                }
 
-                    Intent intent=new Intent();
-                    intent.putExtra("result",acccountString);
-                    RegisterActivity.this.setResult(RESULT_OK,intent);
-                    Toast.makeText(RegisterActivity.this,"注册成功",Toast.LENGTH_SHORT).show();
-                */
-                Message msg=new Message();
-                MyHandler handler=new MyHandler(RegisterActivity.this);
-                msg=handler.obtainMessage();
-                if((Integer)responseModel.getData()==0)
-                {
-                    //用户已经存在
-                    msg.arg1=0;
-                    handler.sendMessage(msg);
-                }
-                else
-                {
-                    //用户注册成功
-                    msg.arg1=1;
-                    Bundle bundle=new Bundle();
-                    bundle.putString("account",acccountString);
-                    msg.setData(bundle);
-                    handler.sendMessage(msg);
-                }
+                //在异步操作中嵌UI线程，进行UI的更新
+                final ResponseModel finalResponseModel = responseModel;
+                RegisterActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if((Integer) finalResponseModel.getData()==0)
+                        {
+                            Toast.makeText(RegisterActivity.this,"注册用户已经存在",Toast.LENGTH_SHORT).show();
+                        }
+                        else if ((Integer)finalResponseModel.getData()==1)
+                        {
+                            Toast.makeText(RegisterActivity.this,"注册成功",Toast.LENGTH_SHORT).show();
+                            onBackPressed();
+                        }
+                    }
+                });
             }
         });
     }
-    class MyHandler extends Handler{
-        private Activity activity;
-        public MyHandler(Activity activity)
-        {
-            this.activity=activity;
-        }
-        @Override
-        public void handleMessage(Message msg)
-        {
-            switch (msg.arg1){
-                case 0:
-                    Toast.makeText(RegisterActivity.this,"注册用户已经存在",Toast.LENGTH_SHORT).show();
-                    break;
-                case 1:
-                    Toast.makeText(RegisterActivity.this,"注册成功",Toast.LENGTH_SHORT).show();
-                    Bundle bundle=msg.getData();
-                    acccountString=bundle.getString("account");
-                    Intent intent=new Intent();
-                    intent.putExtra("result",acccountString);
-                    RegisterActivity.this.setResult(RESULT_OK,intent);
-            }
-        }
+
+
+    @Override
+    public void onBackPressed() {
+        Intent intent=new Intent();
+        intent.putExtra("result",acccountString);
+        this.setResult(1, intent);
+        this.finish();
     }
+
 }
 
