@@ -27,5 +27,5 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
     implementation 'com.squareup.okio:okio:1.14.1'
-    implementation 'org.kie.modules:com-google-code-gson:6.5.0.Final'
+    implementation 'com.google.code.gson:gson:2.8.5'
 }

@@ -175,11 +175,9 @@ public class RegisterActivity extends Activity {
             public void onResponse(Call call, final Response response) throws IOException {
                 //请求成功
                 //Log.e("TAG","成功"+response.body().string());
-                ResponseModel responseModel=new ResponseModel();
-                responseModel=Json_analyze.getperson(response.body().string(),ResponseModel.class);
 
                 //在异步操作中嵌UI线程，进行UI的更新
-                final ResponseModel finalResponseModel = responseModel;
+                final ResponseModel finalResponseModel = Json_analyze.getperson(response.body().string(),ResponseModel.class);
                 RegisterActivity.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

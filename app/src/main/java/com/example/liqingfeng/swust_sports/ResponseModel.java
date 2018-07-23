@@ -1,15 +1,30 @@
 package com.example.liqingfeng.swust_sports;
 
 public class ResponseModel {
+    public static final String SUCCESS = "success";
+    public static final String FAILED = "failed";
     private Object data;
     private String code;
     private String token;
+    private int total;
 
-    public ResponseModel(Object data, String code, String token) {
-        this.data = data;
-        this.code = code;
-        this.token = token;
+    public static String getSUCCESS() {
+        return SUCCESS;
     }
+
+    public static String getFAILED() {
+        return FAILED;
+    }
+
+    public int getTotal() {
+        return total;
+    }
+
+    public void setTotal(int total) {
+        this.total = total;
+    }
+
+
     public ResponseModel()
     {
         super();

@@ -8,11 +8,15 @@ import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Animatable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Base64;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,16 +25,33 @@ import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.IOException;
+import java.util.StringTokenizer;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class LoginActivity extends Activity{
     private TextView mBthLogin;
     private View progress;
     private View mInputLayout;
     private float mWidth, mHeight;
-    private LinearLayout mName, mpas;
+    private LinearLayout mName, mpas,mver;
     private CustomVideoView videoview;
+    private ImageView verify_imageview;
+    //登陆接口
+    private String url="http://wangzhengyu.cn/api/user/login.do";
+    //验证码字符串
+    private String imag_String,verify_code;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,11 +66,20 @@ public class LoginActivity extends Activity{
     }
 
     private void initView() {
+        //获取验证码字符串,并且显示出来
+        Intent intent=getIntent();
+        imag_String=intent.getStringExtra("img");
+        verify_code=intent.getStringExtra("code");
+        Bitmap bitmap= stringToBitmap(imag_String);
+        verify_imageview=findViewById(R.id.verify_image);
+        verify_imageview.setImageBitmap(bitmap);
+
         mBthLogin = (TextView) findViewById(R.id.main_btn_login);
         progress = findViewById(R.id.layout_progress);
         mInputLayout = findViewById(R.id.input_layout);
         mName = (LinearLayout) findViewById(R.id.input_layout_name);
         mpas = (LinearLayout) findViewById(R.id.input_layout_psw);
+        mver=(LinearLayout)findViewById(R.id.input_ver);
 
         videoview = (CustomVideoView) findViewById(R.id.vidoview);
         videoview.setVideoURI(Uri.parse("android.resource://"+getPackageName()+"/"+R.raw.sport));
@@ -67,17 +97,28 @@ public class LoginActivity extends Activity{
 
     }
 
+    public void verify(View view) {
+
+        verify_imageview.setVisibility(view.VISIBLE);
+
+    }
+
     public void logining(View v) {
+
+        //get方式发送请求数据，实现登陆操作
+        login_progress(url);
+
         // 计算出控件的高与宽
         mWidth = mBthLogin.getMeasuredWidth();
         mHeight = mBthLogin.getMeasuredHeight();
         // 隐藏输入框
         mName.setVisibility(View.INVISIBLE);
         mpas.setVisibility(View.INVISIBLE);
-
+        mver.setVisibility(View.INVISIBLE);
         inputAnimator(mInputLayout, mWidth, mHeight);
 
-        //和动画线程分离
+        /*
+        //和动画线程分离 实现登陆操作
         new Thread(){
             public void run(){
                 try {
@@ -92,6 +133,54 @@ public class LoginActivity extends Activity{
             }
 
         }.start();
+        */
+    }
+
+    //登陆请求操作
+    private void login_progress(String Url)
+    {
+        OkHttpClient okHttpClient=new OkHttpClient.Builder()
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .writeTimeout(10,TimeUnit.SECONDS)
+                .readTimeout(20, TimeUnit.SECONDS)
+                .build();
+        final Request request=new Request.Builder()
+                .url(url)
+                .get()
+                .build();
+        Call call=okHttpClient.newCall(request);
+        //异步亲求
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                //如果请求失败，用日志记录
+                Log.e("TAG", "失败"+getClass().toString()+"结果"+e.toString());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+
+                //在异步操作中嵌UI线程，进行UI的更新
+                final ResponseModel finalResponseModel = Json_analyze.getperson(response.body().string(),ResponseModel.class);
+                LoginActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if((Integer) finalResponseModel.getData()==0)
+                        {
+                            Toast.makeText(LoginActivity.this,"登陆失败",Toast.LENGTH_SHORT).show();
+                        }
+                        else if ((Integer)finalResponseModel.getData()==1)
+                        {
+                            Toast.makeText(LoginActivity.this,"登陆成功",Toast.LENGTH_SHORT).show();
+                            Intent intent=new Intent(LoginActivity.this,MaininterfaceActivity.class);
+                            onStop();
+                            startActivity(intent);
+                        }
+                    }
+                });
+            }
+        });
     }
 
     //输入框的动画效果
@@ -178,7 +267,7 @@ public class LoginActivity extends Activity{
     protected void onActivityResult(int requestCode,int resultCode,Intent data)
     {
         String result=data.getExtras().getString("result");
-        EditText usname=findViewById(R.id.input_usname);
+        EditText usname=findViewById(R.id.input_username);
         usname.setText(result);
     }
 
@@ -238,5 +327,18 @@ public class LoginActivity extends Activity{
         return false;
     }
 
+    public Bitmap stringToBitmap(String string) {
+        //将字符串转换成Bitmap类型
+        Bitmap bitmap=null;
+        try {
+            byte[]bitmapArray;
+            bitmapArray= Base64.decode(string, Base64.DEFAULT);
+            bitmap= BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return bitmap;
+    }
 }
 
