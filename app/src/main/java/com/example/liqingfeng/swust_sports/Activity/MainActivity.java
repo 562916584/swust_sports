@@ -12,6 +12,7 @@ import android.view.animation.Animation;
 
 import com.example.liqingfeng.swust_sports.R;
 import com.example.liqingfeng.swust_sports.ResponseModel;
+import com.example.liqingfeng.swust_sports.Tools.Configuration_BaseUrl;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -62,7 +63,8 @@ public class MainActivity extends AppCompatActivity {
     public void request_image()
     {
         //验证码接口
-        String url="http://wangzhengyu.cn/api/verify/getVerify.do";
+        //String url="http://wangzhengyu.cn/api/verify/getVerify.do";
+        String url=Configuration_BaseUrl.getVerify_interface();
         OkHttpClient okHttpClient=new OkHttpClient.Builder()
                 .connectTimeout(10, TimeUnit.SECONDS)
                 .writeTimeout(10,TimeUnit.SECONDS)

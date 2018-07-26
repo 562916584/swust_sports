@@ -14,6 +14,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.liqingfeng.swust_sports.Tools.Configuration_BaseUrl;
 import com.example.liqingfeng.swust_sports.Tools.Json_analyze;
 import com.example.liqingfeng.swust_sports.R;
 import com.example.liqingfeng.swust_sports.ResponseModel;
@@ -106,7 +107,8 @@ public class RegisterActivity extends Activity {
         String usernameString;
         String password1String;
         String password2String;
-        String url="http://wangzhengyu.cn/sport/user/register.do";
+        //String url="http://wangzhengyu.cn/sport/user/register.do";
+        String url= Configuration_BaseUrl.getRegister_interface();
         username = findViewById(R.id.uname);
         account = findViewById(R.id.account);
         password1 = findViewById(R.id.password1);
@@ -134,6 +136,7 @@ public class RegisterActivity extends Activity {
             password1String += "swust_sport";
             password1String = android.util.Base64.encodeToString(password1String.getBytes(),
                     android.util.Base64.DEFAULT);
+            password1String=password1String.replace("\n","");
             sendform(usernameString, acccountString, password1String, url);
 
     }

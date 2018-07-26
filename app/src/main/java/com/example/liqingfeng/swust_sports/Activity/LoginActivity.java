@@ -30,6 +30,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.liqingfeng.swust_sports.Tools.Configuration_BaseUrl;
 import com.example.liqingfeng.swust_sports.View.CustomVideoView;
 import com.example.liqingfeng.swust_sports.JellyInterpolator;
 import com.example.liqingfeng.swust_sports.Tools.Json_analyze;
@@ -58,7 +59,7 @@ public class LoginActivity extends Activity{
     private ImageView verify_imageview;
     private EditText username,password,verify;
     //登陆接口
-    private String url="http://wangzhengyu.cn/api/user/login.do",url_login;
+    private String url= Configuration_BaseUrl.getLogin_interface(),url_login;
     //验证码字符串
     public String imag_String,verify_code;
     public String json;
@@ -93,7 +94,6 @@ public class LoginActivity extends Activity{
             Intent intent1=getIntent();
             imag_String=intent1.getStringExtra("img");
             verify_code=intent1.getStringExtra("code");
-
             Intent intent = new Intent();
             intent.putExtra("img",imag_String);
             intent.putExtra("code",verify_code);
@@ -117,7 +117,7 @@ public class LoginActivity extends Activity{
     //网络请求验证码
     public void requerst_verify(){
         //验证码接口
-        String url="http://wangzhengyu.cn/api/verify/getVerify.do";
+        String url=Configuration_BaseUrl.getVerify_interface();
         OkHttpClient okHttpClient=new OkHttpClient.Builder()
                 .connectTimeout(10, TimeUnit.SECONDS)
                 .writeTimeout(10,TimeUnit.SECONDS)
