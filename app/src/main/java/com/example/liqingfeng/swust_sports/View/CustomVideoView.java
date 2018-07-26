@@ -1,4 +1,4 @@
-package com.example.liqingfeng.swust_sports;
+package com.example.liqingfeng.swust_sports.View;
 
 import android.content.Context;
 import android.media.MediaPlayer;

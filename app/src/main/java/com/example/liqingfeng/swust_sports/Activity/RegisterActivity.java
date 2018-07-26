@@ -1,14 +1,10 @@
-package com.example.liqingfeng.swust_sports;
+package com.example.liqingfeng.swust_sports.Activity;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
-import android.os.Message;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,6 +13,10 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.example.liqingfeng.swust_sports.Tools.Json_analyze;
+import com.example.liqingfeng.swust_sports.R;
+import com.example.liqingfeng.swust_sports.ResponseModel;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -196,6 +196,13 @@ public class RegisterActivity extends Activity {
         intent.putExtra("result",acccountString);
         this.setResult(1, intent);
         this.finish();
+    }
+
+    public void backTologin(View view)
+    {
+        Intent intent=new Intent(RegisterActivity.this,LoginActivity.class);
+        startActivity(intent);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
 }

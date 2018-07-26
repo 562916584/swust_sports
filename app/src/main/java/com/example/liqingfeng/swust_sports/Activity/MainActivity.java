@@ -1,24 +1,22 @@
-package com.example.liqingfeng.swust_sports;
+package com.example.liqingfeng.swust_sports.Activity;
 
-import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 
+import com.example.liqingfeng.swust_sports.R;
+import com.example.liqingfeng.swust_sports.ResponseModel;
 import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
@@ -27,12 +25,10 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class MaininterfaceActivity extends Activity {
-
-    private TextView showtext;
-    private  String json;
+public class MainActivity extends AppCompatActivity {
     private Map<String,String> map;
-    private ImageView imageView;
+    private String json;
+    public static  String image,code;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,14 +36,33 @@ public class MaininterfaceActivity extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);    //设置全屏
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);//去掉标题栏
 
+        setContentView(R.layout.activity_main);
+        final View view = View.inflate(this, R.layout.activity_main, null);
+        setContentView(view);
 
-        setContentView(R.layout.activity_maininterface);
+        AlphaAnimation aa = new AlphaAnimation(0.1f,1.0f);
+        aa.setDuration(3000);
+        view.startAnimation(aa);
+        aa.setAnimationListener(new Animation.AnimationListener()
+        {
+            @Override
+            public void onAnimationEnd(Animation arg0) {
+                getHome(image,code);
+            }
+            @Override
+            public void onAnimationRepeat(Animation animation) {}
+            @Override
+            public void onAnimationStart(Animation animation) {
+                request_image();
+            }
+
+        });
     }
-    /*
-    public void textbutton(View view){
+
+    public void request_image()
+    {
         //验证码接口
         String url="http://wangzhengyu.cn/api/verify/getVerify.do";
-        //String url="http://wangzhengyu.cn/api/sports/sports.do";
         OkHttpClient okHttpClient=new OkHttpClient.Builder()
                 .connectTimeout(10, TimeUnit.SECONDS)
                 .writeTimeout(10,TimeUnit.SECONDS)
@@ -68,49 +83,28 @@ public class MaininterfaceActivity extends Activity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
 
-                final String image;
+
                 //单个解析json
                 json=response.body().string();
                 map=new HashMap<String, String>();
                 Gson gson = new Gson();
                 ResponseModel object = gson.fromJson(json,ResponseModel.class);
                 map=(Map<String, String>) object.getData();
-                image=map.get("img");
-                MaininterfaceActivity.this.runOnUiThread(new Runnable() {
+                MainActivity.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        showtext=findViewById(R.id.show);
-                        imageView=findViewById(R.id.yanzhengma);
-
-                        Bitmap bitmap=stringToBitmap(image);
-                        imageView.setImageBitmap(bitmap);
+                        image=map.get("img");
+                        code=map.get("code");
                     }
                 });
-
-                //多个List《Map》解析json
-                json=response.body().string();
-                Gson gson=new Gson();
-                ResponseModel object=Json_analyze.getperson(json,ResponseModel.class);
-                List<Map<String,String>> list=(List<Map<String,String>>)object.getData();
-                System.out.println(list);
-
             }
         });
-
     }
-    public Bitmap stringToBitmap(String string) {
-        //将字符串转换成Bitmap类型
-        Bitmap bitmap=null;
-        try {
-            byte[]bitmapArray;
-            bitmapArray=Base64.decode(string, Base64.DEFAULT);
-            bitmap=BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return bitmap;
+    public void getHome(String image,String code){
+        Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+        intent.putExtra("img",image);
+        intent.putExtra("code",code);
+        startActivity(intent);
+        finish();
     }
-
-*/
 }

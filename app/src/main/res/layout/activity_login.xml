@@ -8,12 +8,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context="com.example.liqingfeng.swust_sports">
-        <com.example.liqingfeng.swust_sports.CustomVideoView
+        <com.example.liqingfeng.swust_sports.View.CustomVideoView
             android:id="@+id/vidoview"
             android:layout_height="match_parent"
             android:layout_width="match_parent">
 
-        </com.example.liqingfeng.swust_sports.CustomVideoView>
+        </com.example.liqingfeng.swust_sports.View.CustomVideoView>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">

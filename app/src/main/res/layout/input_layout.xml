@@ -96,7 +96,9 @@
                     android:layout_width="100dp"
                     android:layout_height="60dp"
                     android:id="@+id/verify_image"
-                    android:visibility="invisible"/>
+                    android:visibility="invisible"
+                    android:onClick="redraw"
+                    android:clickable="true"/>
 
             </LinearLayout>
 
