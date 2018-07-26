@@ -136,7 +136,7 @@ public class RegisterActivity extends Activity {
             password1String += "swust_sport";
             password1String = android.util.Base64.encodeToString(password1String.getBytes(),
                     android.util.Base64.DEFAULT);
-            password1String=password1String.replace("\n","");
+            password1String=password1String.replaceAll("[\\s*\t\n\r]", "");
             sendform(usernameString, acccountString, password1String, url);
 
     }
