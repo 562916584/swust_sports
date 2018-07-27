@@ -128,16 +128,18 @@ public class RegisterActivity extends Activity {
                     */
             Toast.makeText(RegisterActivity.this, "输入不能为空", Toast.LENGTH_SHORT).show();
         }
-        if (!password1String.equals(password2String)){
+        else if (!password1String.equals(password2String)){
             Toast.makeText(RegisterActivity.this,"再次输入密码不正确",Toast.LENGTH_SHORT).show();
         }
+        else {
 
             //数据加密
             password1String += "swust_sport";
             password1String = android.util.Base64.encodeToString(password1String.getBytes(),
                     android.util.Base64.DEFAULT);
-            password1String=password1String.replaceAll("[\\s*\t\n\r]", "");
+            password1String = password1String.replaceAll("[\\s*\t\n\r]", "");
             sendform(usernameString, acccountString, password1String, url);
+        }
 
     }
 

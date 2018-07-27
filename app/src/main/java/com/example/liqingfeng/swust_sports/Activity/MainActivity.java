@@ -33,10 +33,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);    //设置全屏
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);//去掉标题栏
-
         setContentView(R.layout.activity_main);
         final View view = View.inflate(this, R.layout.activity_main, null);
         setContentView(view);

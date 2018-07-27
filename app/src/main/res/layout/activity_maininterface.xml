@@ -9,13 +9,9 @@
     tools:openDrawer="start">
 
     <!--中间部分-->
-    <include layout="@layout/content_main">
-
-    </include>
+    <include layout="@layout/content_main"/>
 
     <!--右侧菜单-->
-    <include layout="@layout/acctivity_main_menu">
-
-    </include>
+    <include layout="@layout/acctivity_main_menu"/>
 
 </android.support.v4.widget.DrawerLayout>

@@ -15,6 +15,8 @@ import com.example.liqingfeng.swust_sports.Activity.MaininterfaceActivity;
 import com.example.liqingfeng.swust_sports.R;
 
 public class MessageFragmen extends Fragment{
+
+
     private static final String TAG = "MessageFragment";
     private String mTagtext;
 

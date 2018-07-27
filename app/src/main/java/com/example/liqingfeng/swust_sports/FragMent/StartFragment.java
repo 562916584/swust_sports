@@ -9,10 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.example.liqingfeng.swust_sports.Activity.MainActivity;
 import com.example.liqingfeng.swust_sports.Activity.MaininterfaceActivity;
 import com.example.liqingfeng.swust_sports.R;
 
 public class StartFragment extends Fragment{
+
     private static final String TAG = "StarFragment";
     private String mTagtext;
 
