@@ -35,6 +35,7 @@ public class RegisterActivity extends Activity {
     private EditText password1;
     private EditText password2;
     public static String acccountString;
+    public static String json;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,7 +176,8 @@ public class RegisterActivity extends Activity {
                 //Log.e("TAG","成功"+response.body().string());
 
                 //在异步操作中嵌UI线程，进行UI的更新
-                final ResponseModel finalResponseModel = Json_analyze.getperson(response.body().string(),ResponseModel.class);
+                json=response.body().string();
+                final ResponseModel finalResponseModel = Json_analyze.getperson(json,ResponseModel.class);
                 RegisterActivity.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

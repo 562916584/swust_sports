@@ -74,6 +74,7 @@ public class MaininterfaceActivity extends AppCompatActivity {
         mTvAdd.setVisibility(View.GONE);
         mTvMore.setVisibility(View.GONE);
 
+
         //底部导航设置
         mTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
         //关联主布局
@@ -84,6 +85,7 @@ public class MaininterfaceActivity extends AppCompatActivity {
         mTabHost.getTabWidget().setShowDividers(LinearLayout.SHOW_DIVIDER_NONE);
 
         initBottomNavigationView();
+
     }
 
     private void initBottomNavigationView() {

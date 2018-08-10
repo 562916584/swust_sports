@@ -89,9 +89,7 @@
                     android:textColor="@color/white"
                     android:textColorHint="@color/white"
                     android:layout_marginBottom="7dp"
-                    android:focusableInTouchMode="true"
-                    android:onClick="verify"
-                    android:clickable="true"/>
+                    android:focusableInTouchMode="true" />
                 <ImageView
                     android:layout_width="100dp"
                     android:layout_height="60dp"

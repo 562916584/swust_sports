@@ -192,23 +192,22 @@ public class LoginActivity extends Activity{
             }
         });
 
+        //焦点监听
+        verify.setOnFocusChangeListener( new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if(hasFocus) {
+                    verify_imageview.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    verify_imageview.setVisibility( View.INVISIBLE );
+                }
+            }
+        } );
 
     }
 
-    public void verify(View view) {
-
-        verify_imageview.setVisibility(view.VISIBLE);
-
-    }
-    //登陆失败 恢复之前的样子
-    public void recover()
-    {
-        finish();
-        startActivity(getIntent());
-        requerst_verify();
-        drawverify();
-
-    }
 
     public void logining(View v) {
 
@@ -304,27 +303,28 @@ public class LoginActivity extends Activity{
                         if((Double)map.get("status")==2.0)
                         {
                             Toast.makeText(LoginActivity.this,"用户不存在",Toast.LENGTH_SHORT).show();
-                            recover();
+                            //recover();
                         }
                         else if ((Double)map.get("status")==1.0)
                         {
                             //登陆动画
+                            Toast.makeText(LoginActivity.this,"登陆成功",Toast.LENGTH_SHORT).show();
                             animation_start();
                         }
                         else if((Double)map.get("status")==3.0)
                         {
                             Toast.makeText(LoginActivity.this,"密码错误",Toast.LENGTH_SHORT).show();
-                            recover();
+                            //recover();
                         }
                         else if((Double)map.get("status")==4.0)
                         {
                             Toast.makeText(LoginActivity.this,"验证码错误",Toast.LENGTH_SHORT).show();
-                            recover();
+                            //recover();
                         }
                         else if((Double)map.get("status")==5.0)
                         {
                             Toast.makeText(LoginActivity.this,"用户已被锁定",Toast.LENGTH_SHORT).show();
-                            recover();
+                            //recover();
                         }
                     }
                 });
@@ -444,74 +444,6 @@ public class LoginActivity extends Activity{
         usname.setText(result);
     }
 
-
-    /**
-     * 收起软键盘输入法
-     *
-     * @param v
-     */
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            View v = getCurrentFocus();
-            if (isShouldHideKeyboard(v, ev)) {
-                boolean res=hideKeyboard(v.getWindowToken());
-                if(res){
-                    //隐藏了输入法，则不再分发事件
-                    return true;
-                }
-            }
-        }
-        return super.dispatchTouchEvent(ev);
-    }
-    /**
-     * 显示软键盘输入法
-     *
-     * @param v
-     */
-    private void showSoftInput(View v) {
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(v, InputMethodManager.SHOW_FORCED);
-    }
-
-    /**
-     * 根据EditText所在坐标和用户点击的坐标相对比，来判断是否隐藏键盘，因为当用户点击EditText时则不能隐藏
-     *
-     * @param v
-     * @param event
-     * @return
-     */
-    private boolean isShouldHideKeyboard(View v, MotionEvent event) {
-        if (v != null && (v instanceof EditText)) {
-            int[] l = {0, 0};
-            v.getLocationInWindow(l);
-            int left = l[0],
-                    top = l[1],
-                    bottom = top + v.getHeight(),
-                    right = left + v.getWidth();
-            if (event.getX() > left && event.getX() < right
-                    && event.getY() > top && event.getY() < bottom) {
-                // 点击EditText的事件，忽略它。
-                return false;
-            } else {
-                return true;
-            }
-        }
-        // 如果焦点不是EditText则忽略，这个发生在视图刚绘制完，第一个焦点不在EditText上，和用户用轨迹球选择其他的焦点
-        return false;
-    }
-
-    /**
-     * 获取InputMethodManager，隐藏软键盘
-     * @param token
-     */
-    private boolean hideKeyboard(IBinder token) {
-        if (token != null) {
-            InputMethodManager im = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            return  im.hideSoftInputFromWindow(token, InputMethodManager.HIDE_NOT_ALWAYS);
-        }
-        return false;
-    }
 
     //绘制验证码
     public Bitmap stringToBitmap(String string) {
