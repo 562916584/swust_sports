@@ -16,12 +16,17 @@ import com.example.liqingfeng.swust_sports.Tools.Configuration_BaseUrl;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.Cookie;
+import okhttp3.CookieJar;
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -30,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
     private Map<String,String> map;
     private String json;
     public static  String image,code;
+
+    public static final HashMap<String, List<Cookie>> cookieStore = new HashMap<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +69,18 @@ public class MainActivity extends AppCompatActivity {
         //String url="http://wangzhengyu.cn/api/verify/getVerify.do";
         String url=Configuration_BaseUrl.getVerify_interface();
         OkHttpClient okHttpClient=new OkHttpClient.Builder()
+                .cookieJar( new CookieJar() {
+                    @Override
+                    public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
+                        cookieStore.put( url.host(), cookies );
+                    }
+
+                    @Override
+                    public List<Cookie> loadForRequest(HttpUrl url) {
+                        List<Cookie> cookies = cookieStore.get( url.host() );
+                        return cookies != null ? cookies : new ArrayList<Cookie>(  );
+                    }
+                } )
                 .connectTimeout(10, TimeUnit.SECONDS)
                 .writeTimeout(10,TimeUnit.SECONDS)
                 .readTimeout(20, TimeUnit.SECONDS)
@@ -84,15 +103,13 @@ public class MainActivity extends AppCompatActivity {
 
                 //单个解析json
                 json=response.body().string();
-                map=new HashMap<String, String>();
                 Gson gson = new Gson();
                 ResponseModel object = gson.fromJson(json,ResponseModel.class);
-                map=(Map<String, String>) object.getData();
+                final String img=(String) object.getData();
                 MainActivity.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        image=map.get("img");
-                        code=map.get("code");
+                        image=img;
                     }
                 });
             }

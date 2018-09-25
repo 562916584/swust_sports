@@ -39,12 +39,17 @@ import com.example.liqingfeng.swust_sports.ResponseModel;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.Cookie;
+import okhttp3.CookieJar;
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -59,11 +64,10 @@ public class LoginActivity extends Activity{
     private ImageView verify_imageview;
     private EditText username,password,verify;
     //登陆接口
-    private String url= Configuration_BaseUrl.getLogin_interface(),url_login;
+    private String url,url_login;
     //验证码字符串
-    public String imag_String,verify_code;
+    public String imag_String;
     public String json;
-    public Map<String,String> map;
 
 
     private SharedPreferences sharedPreferences;
@@ -93,10 +97,8 @@ public class LoginActivity extends Activity{
         if (count == 0){
             Intent intent1=getIntent();
             imag_String=intent1.getStringExtra("img");
-            verify_code=intent1.getStringExtra("code");
             Intent intent = new Intent();
             intent.putExtra("img",imag_String);
-            intent.putExtra("code",verify_code);
             intent.setClass(getApplicationContext(), WelcomeActivity.class);
             startActivity(intent);
             this.finish();
@@ -141,15 +143,13 @@ public class LoginActivity extends Activity{
 
                 //单个解析json
                 json=response.body().string();
-                map=new HashMap<String, String>();
                 Gson gson = new Gson();
                 ResponseModel object = gson.fromJson(json,ResponseModel.class);
-                map=(Map<String, String>) object.getData();
+                final String img=(String) object.getData();
                 LoginActivity.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        imag_String=map.get("img");
-                        verify_code=map.get("code");
+                        imag_String=img;
                     }
                 });
             }
@@ -165,7 +165,6 @@ public class LoginActivity extends Activity{
         //获取验证码字符串,并且显示出来
         Intent intent=getIntent();
         imag_String=intent.getStringExtra("img");
-        verify_code=intent.getStringExtra("code");
         drawverify();
 
         mBthLogin = (TextView) findViewById(R.id.main_btn_login);
@@ -222,24 +221,6 @@ public class LoginActivity extends Activity{
             login_progress(url_login);
 
         }
-
-        /*
-        //和动画线程分离 实现登陆操作
-        new Thread(){
-            public void run(){
-                try {
-                    //耗时操作
-                    sleep(2000);
-                    Intent intent=new Intent(LoginActivity.this,MaininterfaceActivity.class);
-                    onStop();
-                    startActivity(intent);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }.start();
-        */
     }
 
     //登陆动画开始
@@ -258,16 +239,16 @@ public class LoginActivity extends Activity{
 
     //返回URL 登陆接口
     private String requesturl() {
-        String usName,usPassword,verifyCode,code;
+        String usName,usPassword,code;
         usName=username.getText().toString();
         usPassword=password.getText().toString();
-        verifyCode=verify_code;
         code=verify.getText().toString();
         //密码加密
         usPassword += "swust_sport";
         usPassword = android.util.Base64.encodeToString(usPassword.getBytes(),
                 android.util.Base64.DEFAULT);
-        url=url+"?"+"usName="+usName+"&usPassword="+usPassword+"&verifyCode="+verifyCode +"&code="+code;
+        usPassword = usPassword.replaceAll("[\\s*\t\n\r]", "");
+        url=Configuration_BaseUrl.getLogin_interface()+"?"+"usName="+usName+"&usPassword="+usPassword+"&code="+code;
         return url;
     }
 
@@ -275,6 +256,18 @@ public class LoginActivity extends Activity{
     private void login_progress(String Url)
     {
         OkHttpClient okHttpClient=new OkHttpClient.Builder()
+                .cookieJar( new CookieJar() {
+                    @Override
+                    public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
+                        MainActivity.cookieStore.put( url.host(), cookies );
+                    }
+
+                    @Override
+                    public List<Cookie> loadForRequest(HttpUrl url) {
+                        List<Cookie> cookies = MainActivity.cookieStore.get( url.host() );
+                        return cookies != null ? cookies : new ArrayList<Cookie>(  );
+                    }
+                } )
                 .build();
         final Request request=new Request.Builder()
                 .url(url)
